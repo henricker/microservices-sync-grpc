@@ -6,7 +6,7 @@ import env from './config/env'
 export default {
   
   async getUserById(call, callback) {
-    const { id } = call.request
+    const { id } = call.request.user
 
     const user = await User.findById(id)
 
@@ -19,13 +19,13 @@ export default {
   },
   
   async registerUser(call, callback) {
-    const { email, username, password } = call.request
+    const { email, username, password } = call.request.user
     const user = await User.create({ email, username, password })
-    return callback(null, { user: { ...user.toObject(), id: user._id, password: undefined } })
+    return callback(null, { user: { ...user.toObject(), id: user._id } })
   },
   
   async loginUser(call, callback) {
-    const { email, password } = call.request
+    const { email, password } = call.request.user
 
     const user = await User.findOne({ email })
 
@@ -36,14 +36,13 @@ export default {
       return callback(null, { error: 'invalid credentials' })
   
     const token = User.generateToken(user)
-
     return callback(null, {
       token
     })
   },
 
   async authenticate(call, callback) {
-    const { token: fullToken } = call.request;
+    const { token: fullToken } = call.request
 
     if (!fullToken) {
       callback(null, { error: 'No token provided' });

@@ -6,7 +6,7 @@ import env from './config/env'
 export default {
   
   async getUserById(call, callback) {
-    const { id } = call.request.user
+    const { id } = call.request
 
     const user = await User.findById(id)
 
@@ -21,7 +21,7 @@ export default {
   async registerUser(call, callback) {
     const { email, username, password } = call.request.user
     const user = await User.create({ email, username, password })
-    return callback(null, { user: { ...user.toObject(), id: user._id } })
+    return callback(null, { user: { ...user.toObject(), id: user._id,  password: undefined } })
   },
   
   async loginUser(call, callback) {

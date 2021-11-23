@@ -35,7 +35,7 @@ export default {
     if(!(await user.compareHash(password)))
       return callback(null, { error: 'invalid credentials' })
   
-    const token = User.generateToken(user)
+    const token = User.generateToken({ id: user._id })
     return callback(null, {
       token
     })

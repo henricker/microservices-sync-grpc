@@ -3,7 +3,7 @@ import grpc from 'grpc'
 import * as protoLoader from '@grpc/proto-loader'
 import implementations from './implementations'
 
-require('./database')
+import './database'
 
 const packageDefinition = protoLoader.loadSync(
   path.resolve(__dirname, 'pb', 'messages.proto'),

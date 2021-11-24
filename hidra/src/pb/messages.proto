@@ -33,9 +33,24 @@ message AuthenticationRequest {
   string token = 1;
 }
 
+message AvatarUploadRequest {
+  FileMetadata metadata = 1;
+  bytes file = 2;
+}
+
+message AvatarUploadResponse {
+  string message = 1;
+}
+
+message FileMetadata {
+  string filename = 1;
+  string mimetype = 2;
+}
+
 service UserService {
   rpc getUserById(GetUserByIdRequest) returns (UserResponse);
   rpc registerUser(RegisterUserRequest) returns (UserResponse);
   rpc loginUser(LoginUserRequest) returns (LoginResponse);
   rpc authenticate(AuthenticationRequest) returns (UserResponse);
+  rpc avatarUpload(stream AvatarUploadRequest) returns (AvatarUploadResponse);
 }

@@ -2,6 +2,8 @@ import User from './models/User'
 import jwt from 'jsonwebtoken'
 import { promisify } from 'util'
 import env from './config/env'
+import fs from 'fs'
+import path from 'path'
 
 export default {
   
@@ -68,6 +70,30 @@ export default {
       return callback(null, { user: { ...user.toObject(), id: user._id } });
     } catch (err) {
       return callback(null, { error: 'Token invalid' });
+    }
+  },
+
+  async avatarUpload(call, callback) {
+    try {
+      let metadata;
+      let chuncks = []
+      call.on('data', async (payload) => {
+        if(payload?.data == 'metadata' && payload[payload.data])
+          metadata = payload.metadata
+        
+        else if(payload.data && payload.data=='file' && payload[payload.data]) {
+          const file = payload[payload.data];
+          fs.appendFileSync(path.resolve(__dirname, '..', 'uploads', metadata.filename))
+          console.log(`Writing file chunk: uploads/${metadata.filename}`)
+        }
+      })
+
+      call.on('end', async () => {
+        callback(null, { message: 'success' })
+      })
+    } catch(err) {
+      console.log(err)
+      return callback(null, { message: 'An error occurred' })
     }
   }
 }
